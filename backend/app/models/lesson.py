@@ -4,13 +4,13 @@ from app.core.db import Base
 import enum
 
 
-class Weekday(int, enum.Enum):
-    monday = 1
-    tuesday = 2
-    wednesday = 3
-    thursday = 4
-    friday = 5
-    saturday = 6
+class Weekday(str, enum.Enum):
+    monday = "monday"
+    tuesday = "tuesday"
+    wednesday = "wednesday"
+    thursday = "thursday"
+    friday = "friday"
+    saturday = "saturday"
 
 
 class Lesson(Base):
@@ -23,7 +23,9 @@ class Lesson(Base):
     discipline_id = Column(Integer, ForeignKey("disciplines.id"), nullable=True)
 
     subject_raw = Column(String, nullable=False)
-    weekday = Column(Enum(Weekday), nullable=False)
+
+    weekday = Column(Enum(Weekday, name="weekday_enum"), nullable=False)
+
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
 

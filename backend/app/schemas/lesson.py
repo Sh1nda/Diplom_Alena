@@ -8,7 +8,6 @@ class LessonOut(BaseModel):
     group_id: int
     teacher_id: int
     room_id: int
-    discipline_id: int | None
     subject_raw: str
     weekday: Weekday
     start_time: time

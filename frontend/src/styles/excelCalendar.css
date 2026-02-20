@@ -1,0 +1,70 @@
+/* Убираем верхнюю панель */
+.fc-header-toolbar {
+  display: none !important;
+}
+
+/* Убираем даты, оставляем только дни недели */
+.fc-col-header-cell-cushion {
+  font-size: 17px;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 8px 0 !important;
+}
+.fc-col-header-cell-cushion > span:nth-child(2) {
+  display: none !important;
+}
+
+/* Excel‑границы */
+.fc-scrollgrid,
+.fc-scrollgrid table,
+.fc-scrollgrid td,
+.fc-scrollgrid th {
+  border: 1px solid #bfbfbf !important;
+}
+
+/* Ширина колонок — увеличена для читаемости */
+.fc-timegrid-col {
+  width: 200px !important;
+  border: 1px solid #d0d0d0 !important;
+}
+
+/* Высота строки — увеличена для читаемости */
+.fc-timegrid-slot {
+  height: 100px !important;
+  border: 1px solid #d0d0d0 !important;
+}
+
+/* Время слева */
+.fc-timegrid-slot-label {
+  font-weight: bold;
+  background: #fafafa;
+  border-right: 1px solid #bfbfbf !important;
+  padding-top: 10px !important;
+}
+
+/* Сами блоки занятий */
+.fc-timegrid-event {
+  height: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: 6px !important;
+  font-weight: 500;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Многострочный текст */
+.fc-event-title {
+  white-space: pre-line !important;
+  font-size: 15px;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* Заголовки дней */
+.fc-col-header-cell {
+  background: #f3f3f3 !important;
+  font-weight: bold;
+  border: 1px solid #bfbfbf !important;
+  text-align: center;
+}
