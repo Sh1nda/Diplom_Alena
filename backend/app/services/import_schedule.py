@@ -1,164 +1,144 @@
-from datetime import time
-from typing import Dict, Tuple
-
-from openpyxl import load_workbook
+import io
+import re
+from typing import Optional
 from sqlalchemy.orm import Session
-
-from app.models.lesson import Lesson, Weekday
-from app.models.room import Room
+from openpyxl import load_workbook
+from datetime import time
+from app.models import Lesson, Teacher, Group, Room
+from app.schemas import Weekday
+from app.models.lesson import Lesson
 from app.models.group import Group
-from app.models.user import User, UserRole
+from app.models.room import Room
+from app.models.user import User
 
 
-def parse_time_range(label: str) -> Tuple[time, time]:
-    # пример: "8.00 9.35" или "13.45 15.20"
-    parts = label.replace(" ", "").split()
-    if len(parts) == 1:
-        parts = label.split()
-    start_str, end_str = parts[0], parts[1]
-    def to_time(s: str) -> time:
-        s = s.replace(".", ":")
-        h, m = s.split(":")
-        return time(hour=int(h), minute=int(m))
-    return to_time(start_str), to_time(end_str)
+# Фиксированный список временных слотов (начиная с 8:00)
+TIME_SLOTS = [
+    (time(8, 0), time(9, 35)),
+    (time(9, 50), time(11, 25)),
+    (time(11, 40), time(13, 15)),
+    (time(13, 45), time(15, 20)),
+    (time(15, 35), time(17, 10)),
+    (time(17, 25), time(19, 0)),
+    (time(19, 15), time(20, 50)),
+]
 
+# Регулярные выражения для парсинга строки занятия
+GROUP_PATTERN = re.compile(r'\b\d{2}[А-ЯA-Z]{3,}\d*\b')
+TYPE_PATTERN = re.compile(r'\b(лб\.|лек\.|пр\.)\b', re.IGNORECASE)
+ROOM_PATTERN = re.compile(r'\b[А-Яа-яA-Za-z0-9\-]{2,}\b$')
 
-def detect_weekday(col_idx: int, day_columns: Dict[int, Weekday]) -> Weekday:
-    # day_columns: {col_index: Weekday}
-    return day_columns.get(col_idx)
+def parse_lesson_line(line: str) -> Optional[dict]:
+    """
+    Извлекает данные из строки занятия.
+    Возвращает словарь с полями или None, если не удалось распарсить.
+    """
+    group_match = GROUP_PATTERN.search(line)
+    if not group_match:
+        return None
+    group_id = group_match.group()
 
+    type_match = TYPE_PATTERN.search(line)
+    if not type_match:
+        return None
+    lesson_type = type_match.group()
 
-def get_or_create_room(db: Session, name: str) -> Room:
-    room = db.query(Room).filter(Room.name == name).first()
-    if room:
-        return room
-    room = Room(name=name)
-    db.add(room)
-    db.commit()
-    db.refresh(room)
+    type_index = line.find(lesson_type)
+    subject_part = line[group_match.end():type_index].strip()
+    subject = subject_part
+
+    after_type = line[type_index + len(lesson_type):].strip()
+    if not after_type:
+        return None
+
+    room_match = ROOM_PATTERN.search(after_type)
+    if not room_match:
+        return None
+    room_id = room_match.group()
+
+    teachers_part = after_type[:room_match.start()].strip().rstrip(',')
+    teachers = [t.strip().rstrip(',') for t in teachers_part.split(',') if t.strip()]
+    if not teachers:
+        return None
+    teacher_name = teachers[0]
+
+    return {
+        'group_id': group_id,
+        'subject': subject,
+        'type': lesson_type,
+        'teachers': teachers,
+        'teacher_name': teacher_name,
+        'room_id': room_id,
+        'subject_raw': line
+    }
+
+def get_or_create_teacher(db: Session, full_name: str):
+    teacher = db.query(Teacher).filter(Teacher.full_name == full_name).first()
+    if not teacher:
+        teacher = Teacher(full_name=full_name)
+        db.add(teacher)
+        db.commit()
+        db.refresh(teacher)
+    return teacher
+
+def get_or_create_group(db: Session, group_code: str):
+    group = db.query(Group).filter(Group.code == group_code).first()
+    if not group:
+        group = Group(code=group_code)
+        db.add(group)
+        db.commit()
+        db.refresh(group)
+    return group
+
+def get_or_create_room(db: Session, room_code: str):
+    room = db.query(Room).filter(Room.code == room_code).first()
+    if not room:
+        room = Room(code=room_code)
+        db.add(room)
+        db.commit()
+        db.refresh(room)
     return room
 
-
-def get_or_create_group(db: Session, code: str) -> Group:
-    grp = db.query(Group).filter(Group.code == code).first()
-    if grp:
-        return grp
-    grp = Group(code=code)
-    db.add(grp)
-    db.commit()
-    db.refresh(grp)
-    return grp
-
-
-def get_or_create_teacher(db: Session, full_name: str) -> User:
-    user = db.query(User).filter(User.full_name == full_name).first()
-    if user:
-        return user
-    # email можно сгенерировать технический
-    email = full_name.replace(" ", ".").replace(".", "").lower() + "@example.com"
-    user = User(
-        full_name=full_name,
-        email=email,
-        password_hash="",  # потом можно задать вручную
-        role=UserRole.teacher,
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
-
-
 def import_schedule_from_xlsx(db: Session, content: bytes):
-    wb = load_workbook(filename=None, data=content)
-    ws = wb.active  # предполагаем, что нужный лист — первый
+    wb = load_workbook(filename=io.BytesIO(content), data_only=True)
+    ws = wb.active
 
-    # 1) Разбираем шапку: где дни, где интервалы
-    # У тебя в примере: сверху идут времена, а дни — по блокам столбцов.
-    # Для простоты: считаем, что:
-    # - первая строка: заголовок "понедельник", "вторник", ...
-    # - вторая строка: интервалы времени.
-    day_columns: Dict[int, Weekday] = {}
-    time_ranges: Dict[int, Tuple[time, time]] = {}
+    current_teacher = None
+    slot_index = 0
 
-    for col in range(1, ws.max_column + 1):
-        day_cell = ws.cell(row=1, column=col).value
-        time_cell = ws.cell(row=2, column=col).value
-        if isinstance(day_cell, str):
-            day_cell_lower = day_cell.strip().lower()
-            if "понедельник" in day_cell_lower:
-                day_columns[col] = Weekday.monday
-            elif "вторник" in day_cell_lower:
-                day_columns[col] = Weekday.tuesday
-            elif "среда" in day_cell_lower:
-                day_columns[col] = Weekday.wednesday
-            elif "четверг" in day_cell_lower:
-                day_columns[col] = Weekday.thursday
-            elif "пятница" in day_cell_lower:
-                day_columns[col] = Weekday.friday
-            elif "суббота" in day_cell_lower:
-                day_columns[col] = Weekday.saturday
-
-        if isinstance(time_cell, str):
-            try:
-                start_t, end_t = parse_time_range(time_cell)
-                time_ranges[col] = (start_t, end_t)
-            except Exception:
-                continue
-
-    # 2) По строкам: преподаватель + ячейки с занятиями
-    # Предположим, что ФИО преподавателя в первом столбце (col=1), начиная с row=3
-    for row in range(3, ws.max_row + 1):
-        teacher_name = ws.cell(row=row, column=1).value
-        if not teacher_name:
+    for row in ws.iter_rows(values_only=True):
+        if not row:
             continue
-        teacher_name = str(teacher_name).strip()
-        teacher = get_or_create_teacher(db, teacher_name)
-
-        for col in range(2, ws.max_column + 1):
-            cell_value = ws.cell(row=row, column=col).value
-            if not cell_value:
-                continue
-            weekday = detect_weekday(col, day_columns)
-            if not weekday:
-                continue
-            if col not in time_ranges:
-                continue
-            start_t, end_t = time_ranges[col]
-
-            text = str(cell_value).strip()
-            # Простейший парсер: ищем группу (шаблон вида 23ВВИ2 — цифры+буквы)
-            parts = text.split()
-            group_code = None
-            room_name = None
-
-            # группа — первый токен, начинающийся с цифр
-            for p in parts:
-                if any(ch.isdigit() for ch in p):
-                    group_code = p
-                    break
-
-            # аудитория — токен вида "7а-316"
-            for p in parts[::-1]:
-                if "-" in p and any(ch.isdigit() for ch in p):
-                    room_name = p
-                    break
-
-            if not group_code or not room_name:
-                continue
-
-            group = get_or_create_group(db, group_code)
-            room = get_or_create_room(db, room_name)
-
-            lesson = Lesson(
-                group_id=group.id,
-                teacher_id=teacher.id,
-                room_id=room.id,
-                discipline_id=None,
-                subject_raw=text,
-                weekday=weekday,
-                start_time=start_t,
-                end_time=end_t,
-            )
-            db.add(lesson)
-
+        first_cell = str(row[0]).strip() if row[0] is not None else ''
+        if first_cell.isdigit():
+            current_teacher = None
+            slot_index = 0
+            continue
+        elif current_teacher is None and first_cell:
+            current_teacher = first_cell
+            continue
+        elif current_teacher and any(cell for cell in row):
+            for cell in row:
+                if not cell or not isinstance(cell, str):
+                    continue
+                lesson_data = parse_lesson_line(cell)
+                if not lesson_data:
+                    continue
+                if slot_index >= len(TIME_SLOTS):
+                    continue
+                group = get_or_create_group(db, lesson_data['group_id'])
+                teacher = get_or_create_teacher(db, lesson_data['teacher_name'])
+                room = get_or_create_room(db, lesson_data['room_id'])
+                start_time, end_time = TIME_SLOTS[slot_index]
+                lesson = Lesson(
+                    group_id=group.id,
+                    teacher_id=teacher.id,
+                    room_id=room.id,
+                    subject_raw=lesson_data['subject_raw'],
+                    weekday=Weekday.monday,
+                    start_time=start_time,
+                    end_time=end_time
+                )
+                db.add(lesson)
+                slot_index += 1
     db.commit()
