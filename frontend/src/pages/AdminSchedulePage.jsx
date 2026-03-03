@@ -76,9 +76,30 @@ export default function AdminSchedulePage() {
 
             if (slotIndex === -1) return;
 
+            const cleanTitle = (l.title || "")
+              .replace(/<br\s*\/?>/gi, " ")
+              .replace(/[\r\n\t]+/g, " ")
+              .replace(/[\u00AD\u200B\u2060\u2028\u2029]/g, "")
+              .replace(/[–—‑]/g, "-")
+              .replace(/\s*-\s*/g, "-")
+              .replace(/\s+/g, " ")
+              .trim();
+
+            const cleanRoom = (l.room_name || "")
+              .replace(/<br\s*\/?>/gi, " ")
+              .replace(/[\r\n\t]+/g, " ")
+              .replace(/[\u00AD\u200B\u2060\u2028\u2029]/g, "")
+              .replace(/[–—‑]/g, "-")
+              .replace(/\s*-\s*/g, "-")
+              .replace(/\s+/g, " ")
+              .trim();
+
+            
+            const fullTitle =
+              cleanRoom ? `${cleanTitle}${cleanRoom}` : cleanTitle;
+
             row.days[dayName][slotIndex] = {
-              title: l.title,
-              room: l.room_name
+              title: fullTitle
             };
           });
 
@@ -141,7 +162,6 @@ export default function AdminSchedulePage() {
                         {cell && (
                           <div className="lesson-block">
                             <div className="lesson-title">{cell.title}</div>
-                            <div className="lesson-room">{cell.room}</div>
                           </div>
                         )}
                       </td>
