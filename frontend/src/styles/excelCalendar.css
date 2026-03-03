@@ -147,5 +147,10 @@
 .lesson-cell {
   min-width: 180px;   /* было 160 → стало шире */
 }
+.lesson-room {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
 
 
