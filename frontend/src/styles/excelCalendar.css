@@ -1,20 +1,23 @@
-/* Убираем верхнюю панель */
+/* ===== Toolbar ===== */
 .fc-header-toolbar {
   display: none !important;
 }
 
-/* Убираем даты, оставляем только дни недели */
+/* ===== Headers ===== */
+.fc-col-header-cell {
+  background: #f3f3f3 !important;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #bfbfbf !important;
+}
+
 .fc-col-header-cell-cushion {
   font-size: 17px;
   font-weight: 600;
   text-transform: capitalize;
-  padding: 8px 0 !important;
-}
-.fc-col-header-cell-cushion > span:nth-child(2) {
-  display: none !important;
 }
 
-/* Excel‑границы */
+/* ===== Grid ===== */
 .fc-scrollgrid,
 .fc-scrollgrid table,
 .fc-scrollgrid td,
@@ -22,49 +25,58 @@
   border: 1px solid #bfbfbf !important;
 }
 
-/* Ширина колонок — увеличена для читаемости */
-.fc-timegrid-col {
-  width: 200px !important;
-  border: 1px solid #d0d0d0 !important;
-}
-
-/* Высота строки — увеличена для читаемости */
 .fc-timegrid-slot {
   height: 100px !important;
-  border: 1px solid #d0d0d0 !important;
 }
 
-/* Время слева */
 .fc-timegrid-slot-label {
   font-weight: bold;
   background: #fafafa;
-  border-right: 1px solid #bfbfbf !important;
-  padding-top: 10px !important;
 }
 
-/* Сами блоки занятий */
+/* ===== EVENTS (ВАЖНО) ===== */
 .fc-timegrid-event {
-  height: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
+  margin: 2px !important;
   padding: 6px !important;
-  font-weight: 500;
+  border-radius: 0 !important;
+
+  background: #cfe2ff !important;
+  border: 1px solid #9ec5fe !important;
+
   display: flex;
   align-items: flex-start;
 }
 
-/* Многострочный текст */
-.fc-event-title {
-  white-space: pre-line !important;
+/* ❌ НЕЛЬЗЯ height:100% */
+
+/* ===== Content ===== */
+.lesson-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.lesson-title {
+  font-weight: 600;
   font-size: 15px;
   line-height: 1.25;
+  white-space: pre-line;
+}
+
+.lesson-room {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* перенос текста */
+.fc-event-title {
+  white-space: pre-line !important;
   word-break: break-word;
 }
 
-/* Заголовки дней */
-.fc-col-header-cell {
-  background: #f3f3f3 !important;
-  font-weight: bold;
-  border: 1px solid #bfbfbf !important;
-  text-align: center;
+/* hover */
+.fc-timegrid-event:hover {
+  filter: brightness(0.97);
+  cursor: pointer;
 }

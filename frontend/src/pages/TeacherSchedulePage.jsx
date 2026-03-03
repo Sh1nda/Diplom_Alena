@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
+import ruLocale from "@fullcalendar/core/locales/ru";
 import { getMyBookings } from "../api/bookings";
+import "../styles/excelCalendar.css";
 
 export default function TeacherSchedulePage() {
   const [events, setEvents] = useState([]);
@@ -12,23 +13,37 @@ export default function TeacherSchedulePage() {
     getMyBookings()
       .then((data) => {
         const mapped = data.map((b) => ({
-          id: b.id,
+          id: String(b.id),
           title: b.subject,
-          start: b.start_datetime,
-          end: b.end_datetime,
+          start: new Date(b.start_datetime),
+          end: new Date(b.end_datetime),
         }));
+
         setEvents(mapped);
       })
-      .catch((e) => console.error(e));
+      .catch(console.error);
   }, []);
 
   return (
     <div style={{ padding: 20 }}>
       <h2>Моё расписание</h2>
+
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
+        locales={[ruLocale]}
+        locale="ru"
+        timeZone="local"
+
+        headerToolbar={false}
+        allDaySlot={false}
+
+        eventOverlap={true}
+        slotEventOverlap={true}
+        eventMaxStack={4}
+
         events={events}
+        height="auto"
       />
     </div>
   );
