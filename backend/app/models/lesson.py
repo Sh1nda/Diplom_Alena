@@ -17,18 +17,23 @@ class Lesson(Base):
     __tablename__ = "lessons"
 
     id = Column(Integer, primary_key=True, index=True)
+
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     teacher_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
     discipline_id = Column(Integer, ForeignKey("disciplines.id"), nullable=True)
 
+    # Сырой текст из Excel (группа, тип, предмет, препод, аудитория)
     subject_raw = Column(String, nullable=False)
 
+    # День недели (Enum Weekday)
     weekday = Column(Enum(Weekday, name="weekday_enum"), nullable=False)
 
+    # Время пары
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
 
+    # Связи
     group = relationship("Group")
     teacher = relationship("User")
     room = relationship("Room")

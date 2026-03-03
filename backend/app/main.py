@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, rooms, bookings, availability, import_data
 from app.routers import schedule
 from app.routers import schedule, schedule_week
+from app.routers.groups import router as groups_router
 app = FastAPI(title="Scheduling System")
 
 # CORS — обязательно для фронта
@@ -22,6 +23,7 @@ app.include_router(availability.router)
 app.include_router(import_data.router)
 app.include_router(schedule.router)
 app.include_router(schedule_week.router)
+app.include_router(groups_router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

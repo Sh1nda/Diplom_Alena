@@ -1,70 +1,151 @@
-/* Убираем верхнюю панель */
-.fc-header-toolbar {
-  display: none !important;
+/* ================================
+   ОСНОВНАЯ EXCEL‑ТАБЛИЦА
+   ================================ */
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 16px;
+  background: white;
+  font-family: Arial, sans-serif;
 }
 
-/* Убираем даты, оставляем только дни недели */
-.fc-col-header-cell-cushion {
-  font-size: 17px;
+.schedule-table th,
+.schedule-table td {
+  border: 2px solid #999;
+  text-align: center;
+  vertical-align: top;
+  padding: 0;
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.schedule-table th {
+  background: #e9e9e9;
   font-weight: 600;
-  text-transform: capitalize;
-  padding: 8px 0 !important;
-}
-.fc-col-header-cell-cushion > span:nth-child(2) {
-  display: none !important;
+  height: 50px;
+  font-size: 17px;
 }
 
-/* Excel‑границы */
-.fc-scrollgrid,
-.fc-scrollgrid table,
-.fc-scrollgrid td,
-.fc-scrollgrid th {
-  border: 1px solid #bfbfbf !important;
-}
+/* ================================
+   ВРЕМЕННЫЕ СЛОТЫ
+   ================================ */
 
-/* Ширина колонок — увеличена для читаемости */
-.fc-timegrid-col {
-  width: 200px !important;
-  border: 1px solid #d0d0d0 !important;
-}
-
-/* Высота строки — увеличена для читаемости */
-.fc-timegrid-slot {
-  height: 100px !important;
-  border: 1px solid #d0d0d0 !important;
-}
-
-/* Время слева */
-.fc-timegrid-slot-label {
-  font-weight: bold;
-  background: #fafafa;
-  border-right: 1px solid #bfbfbf !important;
-  padding-top: 10px !important;
-}
-
-/* Сами блоки занятий */
-.fc-timegrid-event {
-  height: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-  padding: 6px !important;
-  font-weight: 500;
-  display: flex;
-  align-items: flex-start;
-}
-
-/* Многострочный текст */
-.fc-event-title {
-  white-space: pre-line !important;
+.time-cell {
+  background: #f5f5f5;
+  font-weight: 600;
+  width: 90px;
   font-size: 15px;
+  border-right: 2px solid #999;
+}
+
+/* ================================
+   ЯЧЕЙКА ПАРЫ
+   ================================ */
+
+.lesson-cell {
+  min-height: 160px;
+  padding: 6px;
+  background: #fafafa;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* ================================
+   БЛОК ПАРЫ (ВНУТРИ ЯЧЕЙКИ)
+   ================================ */
+
+.lesson-block {
+  background: #e8f0ff;
+  border: 1px solid #8fb3ff;
+  border-radius: 6px;
+  padding: 8px;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Название предмета */
+.lesson-title {
+  font-size: 15px;
+  font-weight: 600;
   line-height: 1.25;
+  white-space: normal;
   word-break: break-word;
 }
 
-/* Заголовки дней */
-.fc-col-header-cell {
-  background: #f3f3f3 !important;
-  font-weight: bold;
-  border: 1px solid #bfbfbf !important;
-  text-align: center;
+/* Аудитория */
+.lesson-room {
+  font-size: 14px;
+  opacity: 0.8;
 }
+
+/* ================================
+   ОБЁРТКА ДЛЯ СКРОЛЛА
+   ================================ */
+
+.schedule-wrapper {
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+/* ================================
+   ФИКСАЦИЯ ЛЕВОГО СТОЛБЦА
+   ================================ */
+
+.teacher-col {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #f0f0f0;
+  font-weight: bold;
+  width: 200px;
+  text-align: left;
+  padding-left: 10px;
+  border-right: 2px solid #666;
+}
+
+/* ================================
+   ФИКСАЦИЯ ВЕРХНИХ ЗАГОЛОВКОВ
+   ================================ */
+
+.schedule-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+
+/* ================================
+   ЧИТАЕМОСТЬ
+   ================================ */
+
+.lesson-cell:not(:empty) {
+  background: #eef4ff;
+}
+.schedule-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.schedule-table {
+  width: max-content;      /* таблица может быть шире экрана */
+  border-collapse: collapse;
+  table-layout: auto;      /* колонки расширяются по содержимому */
+  font-size: 16px;
+  background: white;
+  font-family: Arial, sans-serif;
+}
+.time-cell {
+  width: 160px;   /* было 90 → стало шире */
+}
+
+.lesson-cell {
+  min-width: 180px;   /* было 160 → стало шире */
+}
+
+
