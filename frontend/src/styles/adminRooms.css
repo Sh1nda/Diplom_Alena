@@ -1,0 +1,69 @@
+/* Заголовок */
+.rm-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Форма */
+.rm-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rm-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  min-width: 180px;
+}
+
+.rm-btn {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.rm-btn:hover {
+  background: #218838;
+}
+
+/* Таблица */
+.rm-table-wrapper {
+  overflow-x: auto;
+}
+
+.rm-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 15px;
+}
+
+.rm-table th,
+.rm-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.rm-table th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+/* Пустая строка */
+.rm-empty {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #666;
+}

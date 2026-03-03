@@ -1,0 +1,106 @@
+/* Заголовок */
+.ab-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Фильтр */
+.ab-filter {
+  margin-bottom: 16px;
+}
+
+.ab-select {
+  padding: 6px 10px;
+  font-size: 15px;
+}
+
+/* Обёртка таблицы */
+.ab-table-wrapper {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+/* Таблица */
+.ab-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 15px;
+}
+
+.ab-table th,
+.ab-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.ab-table th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+/* Пустая строка */
+.ab-empty {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Статусы */
+.ab-status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ab-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.ab-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.ab-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Кнопки */
+.ab-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ab-btn {
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.ab-approve {
+  background: #28a745;
+  color: white;
+}
+
+.ab-approve:hover {
+  background: #218838;
+}
+
+.ab-reject {
+  background: #dc3545;
+  color: white;
+}
+
+.ab-reject:hover {
+  background: #c82333;
+}

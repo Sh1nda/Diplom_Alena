@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { importSchedule, importAssignments } from "../api/imports";
 import AdminLayout from "../components/AdminLayout";
+import "../styles/adminImport.css";
 
 export default function AdminImportPage() {
   const [scheduleFile, setScheduleFile] = useState(null);
@@ -23,33 +24,43 @@ export default function AdminImportPage() {
 
   return (
     <AdminLayout>
-      <h2>Импорт данных</h2>
+      <h2 className="im-title">Импорт данных</h2>
 
-      <form onSubmit={handleSchedule} style={{ marginBottom: 16 }}>
-        <div>Импорт расписания (.xlsx / .xlsm)</div>
-        <input
-          type="file"
-          accept=".xlsx,.xlsm"
-          onChange={(e) => setScheduleFile(e.target.files[0] || null)}
-        />
-        <button type="submit" style={{ marginTop: 8 }}>
-          Импортировать расписание
-        </button>
-      </form>
+      <div className="im-block">
+        <form onSubmit={handleSchedule} className="im-form">
+          <div className="im-label">Импорт расписания (.xlsx / .xlsm)</div>
 
-      <form onSubmit={handleAssignments} style={{ marginBottom: 16 }}>
-        <div>Импорт назначений (.docx)</div>
-        <input
-          type="file"
-          accept=".docx"
-          onChange={(e) => setAssignFile(e.target.files[0] || null)}
-        />
-        <button type="submit" style={{ marginTop: 8 }}>
-          Импортировать назначения
-        </button>
-      </form>
+          <input
+            type="file"
+            accept=".xlsx,.xlsm"
+            onChange={(e) => setScheduleFile(e.target.files[0] || null)}
+            className="im-input"
+          />
 
-      {message && <p>{message}</p>}
+          <button type="submit" className="im-btn">
+            Импортировать расписание
+          </button>
+        </form>
+      </div>
+
+      <div className="im-block">
+        <form onSubmit={handleAssignments} className="im-form">
+          <div className="im-label">Импорт назначений (.docx)</div>
+
+          <input
+            type="file"
+            accept=".docx"
+            onChange={(e) => setAssignFile(e.target.files[0] || null)}
+            className="im-input"
+          />
+
+          <button type="submit" className="im-btn">
+            Импортировать назначения
+          </button>
+        </form>
+      </div>
+
+      {message && <p className="im-message">{message}</p>}
     </AdminLayout>
   );
 }

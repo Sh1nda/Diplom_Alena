@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getFreeRooms } from "../api/availability";
 import AdminLayout from "../components/AdminLayout";
+import "../styles/adminAvailability.css";
 
 export default function AdminAvailabilityPage() {
   const [start, setStart] = useState("");
@@ -16,38 +17,44 @@ export default function AdminAvailabilityPage() {
 
   return (
     <AdminLayout>
-      <h2>Свободные аудитории</h2>
+      <h2 className="av-title">Свободные аудитории</h2>
 
-      <form onSubmit={handleSearch} style={{ marginBottom: 16 }}>
-        <label>
-          Начало:&nbsp;
+      <form onSubmit={handleSearch} className="av-form">
+        <div className="av-field">
+          <label>Начало</label>
           <input
             type="datetime-local"
             value={start}
             onChange={(e) => setStart(e.target.value)}
           />
-        </label>
-        &nbsp;&nbsp;
-        <label>
-          Конец:&nbsp;
+        </div>
+
+        <div className="av-field">
+          <label>Конец</label>
           <input
             type="datetime-local"
             value={end}
             onChange={(e) => setEnd(e.target.value)}
           />
-        </label>
-        &nbsp;&nbsp;
-        <button type="submit">Найти</button>
+        </div>
+
+        <button type="submit" className="av-btn">Найти</button>
       </form>
 
-      <ul>
-        {rooms.map((r) => (
-          <li key={r.id}>
-            {r.name} (вместимость: {r.capacity})
-          </li>
-        ))}
-        {rooms.length === 0 && <li>Нет данных</li>}
-      </ul>
+      <div className="av-results">
+        {rooms.length > 0 ? (
+          <ul className="av-list">
+            {rooms.map((r) => (
+              <li key={r.id} className="av-item">
+                <div className="av-room-name">{r.name}</div>
+                <div className="av-room-capacity">Вместимость: {r.capacity}</div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="av-empty">Нет данных</div>
+        )}
+      </div>
     </AdminLayout>
   );
 }

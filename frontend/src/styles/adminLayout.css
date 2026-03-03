@@ -1,0 +1,76 @@
+/* Общий контейнер */
+.al-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f6f8;
+}
+
+/* Левое меню */
+.al-sidebar {
+  width: 220px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Заголовок */
+.al-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Меню */
+.al-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Ссылки */
+.al-link {
+  font-size: 16px;
+  text-decoration: none;
+  color: #333;
+  padding: 6px 4px;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.al-link:hover {
+  background: #f0f0f0;
+}
+
+/* Активный пункт */
+.al-link.active {
+  font-weight: 600;
+  color: #007bff;
+  background: #e7f1ff;
+  border-left: 4px solid #007bff;
+  padding-left: 8px;
+}
+
+/* Кнопка выхода */
+.al-logout {
+  margin-top: auto;
+  padding: 8px 12px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.al-logout:hover {
+  background: #c82333;
+}
+
+/* Контент */
+.al-content {
+  flex: 1;
+  padding: 24px;
+}
