@@ -15,3 +15,11 @@ class LessonOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class LessonUpdate(BaseModel):
+    subject_raw: str
+    teacher_id: int
+    room_id: int
+    weekday: Weekday
+    start_time: time
+    end_time: time
