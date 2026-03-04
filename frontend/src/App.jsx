@@ -11,7 +11,8 @@ import AdminBookingsPage from "./pages/AdminBookingsPage";
 import AdminRoomsPage from "./pages/AdminRoomsPage";
 import AdminAvailabilityPage from "./pages/AdminAvailabilityPage";
 import AdminImportPage from "./pages/AdminImportPage";
-import AdminSchedulePage from "./pages/AdminSchedulePage";          // расписание
+import AdminSchedulePage from "./pages/AdminSchedulePage";
+import AdminUsersPage from "./pages/AdminUsersPage";               // ← добавили
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -89,6 +90,16 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AdminSchedulePage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Админ: пользователи */}
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUsersPage />
             </ProtectedRoute>
           }
         />

@@ -1,0 +1,72 @@
+.usr-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.usr-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.usr-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  min-width: 180px;
+}
+
+.usr-btn {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.usr-btn:hover {
+  background: #218838;
+}
+
+.usr-delete {
+  background: #dc3545;
+}
+
+.usr-delete:hover {
+  background: #c82333;
+}
+
+.usr-table-wrapper {
+  overflow-x: auto;
+}
+
+.usr-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 15px;
+}
+
+.usr-table th,
+.usr-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.usr-table th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+.usr-empty {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #666;
+}

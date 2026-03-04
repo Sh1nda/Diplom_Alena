@@ -74,3 +74,22 @@
   flex: 1;
   padding: 24px;
 }
+.al-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* или 100% если wrapper фиксирует высоту */
+}
+.al-logout {
+  margin-top: auto;
+  padding: 10px 14px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.al-logout:hover {
+  background: #c82333;
+}

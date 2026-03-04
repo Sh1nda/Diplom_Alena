@@ -1,12 +1,22 @@
 import { useEffect, useState } from "react";
-import { listRooms, createRoom } from "../api/rooms";
+import {
+  listRooms,
+  createRoom,
+  updateRoom,
+  deleteRoom
+} from "../api/rooms";
 import AdminLayout from "../components/AdminLayout";
 import "../styles/adminRooms.css";
 
 export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState([]);
+
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
+
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editCapacity, setEditCapacity] = useState("");
 
   async function load() {
     const data = await listRooms();
@@ -25,6 +35,33 @@ export default function AdminRoomsPage() {
     });
     setName("");
     setCapacity("");
+    await load();
+  }
+
+  function startEdit(room) {
+    setEditId(room.id);
+    setEditName(room.name);
+    setEditCapacity(room.capacity ?? "");
+  }
+
+  function cancelEdit() {
+    setEditId(null);
+    setEditName("");
+    setEditCapacity("");
+  }
+
+  async function saveEdit(id) {
+    await updateRoom(id, {
+      name: editName,
+      capacity: editCapacity ? Number(editCapacity) : null,
+    });
+    cancelEdit();
+    await load();
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm("Удалить аудиторию?")) return;
+    await deleteRoom(id);
     await load();
   }
 
@@ -60,6 +97,7 @@ export default function AdminRoomsPage() {
               <th>ID</th>
               <th>Название</th>
               <th>Вместимость</th>
+              <th>Действия</th>
             </tr>
           </thead>
 
@@ -67,14 +105,71 @@ export default function AdminRoomsPage() {
             {rooms.map((r) => (
               <tr key={r.id}>
                 <td>{r.id}</td>
-                <td>{r.name}</td>
-                <td>{r.capacity}</td>
+
+                <td>
+                  {editId === r.id ? (
+                    <input
+                      className="rm-input"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                    />
+                  ) : (
+                    r.name
+                  )}
+                </td>
+
+                <td>
+                  {editId === r.id ? (
+                    <input
+                      className="rm-input"
+                      type="number"
+                      value={editCapacity}
+                      onChange={(e) => setEditCapacity(e.target.value)}
+                    />
+                  ) : (
+                    r.capacity
+                  )}
+                </td>
+
+                <td>
+                  {editId === r.id ? (
+                    <>
+                      <button
+                        className="rm-btn rm-save"
+                        onClick={() => saveEdit(r.id)}
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        className="rm-btn rm-cancel"
+                        onClick={cancelEdit}
+                      >
+                        Отмена
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="rm-btn rm-edit"
+                        onClick={() => startEdit(r)}
+                      >
+                        Редактировать
+                      </button>
+                      <button
+                        className="rm-btn rm-delete"
+                        onClick={() => handleDelete(r.id)}
+                      >
+                        Удалить
+                      </button>
+                    </>
+                  )}
+                </td>
               </tr>
             ))}
 
             {rooms.length === 0 && (
               <tr>
-                <td colSpan="3" className="rm-empty">
+                <td colSpan="4" className="rm-empty">
                   Нет аудиторий
                 </td>
               </tr>

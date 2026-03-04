@@ -31,6 +31,13 @@ export default function AdminLayout({ children }) {
           <Link className={`al-link ${isActive("/admin/schedule") ? "active" : ""}`} to="/admin/schedule">
             Расписание
           </Link>
+          <Link
+             className={`al-link ${isActive("/admin/users") ? "active" : ""}`}
+            to="/admin/users"
+>
+            Пользователи
+            </Link>
+
         </div>
 
         <button
